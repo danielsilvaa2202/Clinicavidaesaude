@@ -1,67 +1,55 @@
-# Shadcn Admin Dashboard
+<h1 align="center">
+  Clínica <strong>Vida & Saúde</strong> · Sistema Web de Gestão
+</h1>
 
-Admin Dashboard UI crafted with Shadcn and Vite. Built with responsiveness and accessibility in mind.
+<p align="center">
+  Aplicação front-end que digitaliza todo o fluxo de trabalho da clínica — do agendamento da consulta ao histórico clínico — com <strong>Vite + React + TypeScript</strong> e <strong>Tailwind CSS</strong>.
+</p>
 
-![alt text](public/images/shadcn-admin.png)
+<p align="center">
+  Interface construída do zero com <a href="https://ui.shadcn.com"><strong>shadcn/ui</strong></a> (open-source).  
+  Todos os componentes foram customizados para atender às necessidades da Clínica Vida & Saúde. 🎨
+</p>
 
-I've been creating dashboard UIs at work and for my personal projects. I always wanted to make a reusable collection of dashboard UI for future projects; and here it is now. While I've created a few custom components, some of the code is directly adapted from ShadcnUI examples.
+---
 
-> This is not a starter project (template) though. I'll probably make one in the future.
+## ⚙️ Principais módulos
 
-## Features
+| Tela / módulo | Funcionalidades-chave |
+|---------------|----------------------|
+| **Agenda de Consultas** | Cadastro, edição, reagendamento, presença/ausência, detecção de conflitos de horário, exportação, envio de e-mail de lembrete e de feedback |
+| **Pacientes** | CRUD completo com validação de CPF, e-mail, telefone e CEP (auto-preenchimento) |
+| **Profissionais** | Cadastro de médicos, enfermeiros e outros cargos; CRM/COREN; permissões; inativar/reativar |
+| **Auxiliares** | Manutenção de tabelas de apoio (especialidades, medicamentos, CID, posologias, durações) + exportação XLSX |
+| **Histórico Médico** | Observações, alergias, doenças pessoais / familiares, prescrições e medicamentos por consulta |
 
-- Light/dark mode
-- Responsive
-- Accessible
-- With built-in Sidebar component
-- Global Search Command
-- 10+ pages
-- Extra custom components
+---
 
-## Tech Stack
+## 🛠️ Tecnologias
 
-**UI:** [ShadcnUI](https://ui.shadcn.com) (TailwindCSS + RadixUI)
+- **Vite** (front-end bundler)  
+- **React 18** + **TypeScript**  
+- **Tailwind CSS**  
+- **shadcn/ui** (componentes acessíveis e personalizáveis)  
+- **SheetJS (XLSX)** para exportação de dados  
 
-**Build Tool:** [Vite](https://vitejs.dev/)
+---
 
-**Routing:** [TanStack Router](https://tanstack.com/router/latest)
+## 👥 Equipe · Trabalho de Conclusão de Curso
 
-**Type Checking:** [TypeScript](https://www.typescriptlang.org/)
+- Ana Clara de S. C. Lopes  
+- Daniel Alves Silva  
+- Jayana Emine Barbosa Manoel  
+- Kailane Del Conti Cassiolato  
+- Ketlyn Kassiane de Jesus Canal  
+- Lidielly Alcantara Jacinto  
+- Renata Boppre Scharf  
 
-**Linting/Formatting:** [Eslint](https://eslint.org/) & [Prettier](https://prettier.io/)
+---
 
-**Icons:** [Tabler Icons](https://tabler.io/icons)
-
-## Run Locally
-
-Clone the project
-
-```bash
-  git clone https://github.com/satnaing/shadcn-admin.git
-```
-
-Go to the project directory
-
-```bash
-  cd shadcn-admin
-```
-
-Install dependencies
-
-```bash
-  pnpm install
-```
-
-Start the server
+## 🚀 Instalação rápida
 
 ```bash
-  pnpm run dev
-```
-
-## Author
-
-Crafted with 🤍 by [@satnaing](https://github.com/satnaing)
-
-## License
-
-Licensed under the [MIT License](https://choosealicense.com/licenses/mit/)
+# escolha seu gerenciador de pacotes
+pnpm install          # ou: npm install --legacy-peer-deps
+pnpm dev              # ou: npm run dev
