@@ -1,4 +1,3 @@
-// src/pages/auxiliares.tsx
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
@@ -14,13 +13,13 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableCaption,
+  TableCaption
 } from "@/components/ui/table";
 import {
   Card,
   CardHeader,
   CardTitle,
-  CardContent,
+  CardContent
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -29,7 +28,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose,
+  DialogClose
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -39,7 +38,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogCancel,
-  AlertDialogAction,
+  AlertDialogAction
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -92,7 +91,7 @@ interface Duracao {
 const topNavLinks = [
   { title: "Início", href: "/", isActive: false, disabled: false },
   { title: "Profissionais", href: "/profissionais", isActive: false, disabled: false },
-  { title: "Auxiliares", href: "/auxiliares", isActive: true, disabled: false },
+  { title: "Auxiliares", href: "/auxiliares", isActive: true, disabled: false }
 ];
 
 const tabLabels: Record<string, string> = {
@@ -104,11 +103,10 @@ const tabLabels: Record<string, string> = {
   DoencasFamiliares: "Doenças Familiares",
   Medicamentos: "Medicamentos",
   Posologias: "Posologias",
-  Duracoes: "Durações",
+  Duracoes: "Durações"
 };
 
 export default function AuxiliaresPage() {
-  // states
   const [especialidades, setEspecialidades] = useState<Especialidade[]>([]);
   const [tiposConsulta, setTiposConsulta] = useState<TipoConsulta[]>([]);
   const [statusConsulta, setStatusConsulta] = useState<StatusConsulta[]>([]);
@@ -133,10 +131,7 @@ export default function AuxiliaresPage() {
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
   const pageSize = 8;
 
-  // on load
-  useEffect(() => {
-    fetchAll();
-  }, []);
+  useEffect(fetchAll, []);
 
   function fetchAll() {
     fetch("/api/especialidades").then(r => r.json()).then(setEspecialidades);
@@ -159,50 +154,22 @@ export default function AuxiliaresPage() {
     DoencasFamiliares: "doencasfamiliares",
     Medicamentos: "medicamentos",
     Posologias: "posologias",
-    Duracoes: "duracoes",
+    Duracoes: "duracoes"
   };
 
   const labelsMap: Record<string, { head: string[]; fields: string[] }> = {
-    Especialidades: {
-      head: ["ID", "Nome"],
-      fields: ["id_especialidade", "espec_nome"],
-    },
-    TiposConsulta: {
-      head: ["ID", "Tipo"],
-      fields: ["id_tipo_consulta", "tipoconsulta_nome"],
-    },
-    StatusConsulta: {
-      head: ["ID", "Status"],
-      fields: ["id_consult_status", "status_consulta"],
-    },
-    Alergias: {
-      head: ["ID", "Alergia", "CID"],
-      fields: ["id_alergia", "alergia_nome", "alergia_cid"],
-    },
-    Doencas: {
-      head: ["ID", "Doença", "CID"],
-      fields: ["id_doenca", "doenca_nome", "doenca_cid"],
-    },
+    Especialidades: { head: ["ID", "Nome"], fields: ["id_especialidade", "espec_nome"] },
+    TiposConsulta: { head: ["ID", "Tipo"], fields: ["id_tipo_consulta", "tipoconsulta_nome"] },
+    StatusConsulta: { head: ["ID", "Status"], fields: ["id_consult_status", "status_consulta"] },
+    Alergias: { head: ["ID", "Alergia", "CID"], fields: ["id_alergia", "alergia_nome", "alergia_cid"] },
+    Doencas: { head: ["ID", "Doença", "CID"], fields: ["id_doenca", "doenca_nome", "doenca_cid"] },
     DoencasFamiliares: {
       head: ["ID", "Doença Familiar", "CID"],
-      fields: [
-        "id_doenca_familiar",
-        "doenca_familiar_nome",
-        "doenca_familiar_cid",
-      ],
+      fields: ["id_doenca_familiar", "doenca_familiar_nome", "doenca_familiar_cid"]
     },
-    Medicamentos: {
-      head: ["ID", "Medicamento"],
-      fields: ["id_medicamento", "medicamento_nome"],
-    },
-    Posologias: {
-      head: ["ID", "Descrição"],
-      fields: ["id_posologia", "descricao_posologia"],
-    },
-    Duracoes: {
-      head: ["ID", "Duração"],
-      fields: ["id_duracao", "descricao_duracao"],
-    },
+    Medicamentos: { head: ["ID", "Medicamento"], fields: ["id_medicamento", "medicamento_nome"] },
+    Posologias: { head: ["ID", "Descrição"], fields: ["id_posologia", "descricao_posologia"] },
+    Duracoes: { head: ["ID", "Duração"], fields: ["id_duracao", "descricao_duracao"] }
   };
 
   const datasets: Record<string, any[]> = {
@@ -214,10 +181,9 @@ export default function AuxiliaresPage() {
     DoencasFamiliares: doencasFamiliares,
     Medicamentos: medicamentos,
     Posologias: posologias,
-    Duracoes: duracoes,
+    Duracoes: duracoes
   };
 
-  // filtrar, paginar
   const filtered = useMemo(() => {
     const t = search.toLowerCase();
     return datasets[currentTab].filter(o =>
@@ -228,20 +194,16 @@ export default function AuxiliaresPage() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const page = pageMap[currentTab] ?? 1;
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
-  function setPage(n: number) {
-    setPageMap(p => ({ ...p, [currentTab]: n }));
-  }
+  const setPage = (n: number) => setPageMap(p => ({ ...p, [currentTab]: n }));
 
-  // exportar XLSX
-  function exportXlsx() {
+  const exportXlsx = () => {
     const ws = XLSX.utils.json_to_sheet(filtered);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, currentTab);
     XLSX.writeFile(wb, `${currentTab.toLowerCase()}_${Date.now()}.xlsx`);
-  }
+  };
 
-  // abrir diálogo
-  function openCreate(tab: string) {
+  const openCreate = (tab: string) => {
     setDialogMode("create");
     setSelectedId(null);
     setNome("");
@@ -250,9 +212,9 @@ export default function AuxiliaresPage() {
     setCampo2Error("");
     setCurrentTab(tab);
     setDialogOpen(true);
-  }
+  };
 
-  function openEdit(tab: string, id: number, data: any) {
+  const openEdit = (tab: string, id: number, data: any) => {
     setDialogMode("edit");
     setSelectedId(id);
     setNome(data.nome);
@@ -261,125 +223,100 @@ export default function AuxiliaresPage() {
     setCampo2Error(validateCampo2(data.campo2 || "", tab));
     setCurrentTab(tab);
     setDialogOpen(true);
-  }
+  };
 
-  async function handleDelete() {
+  const handleDelete = async () => {
     if (selectedId == null) return;
-    await fetch(`/api/${apiMap[currentTab]}/${selectedId}`, {
-      method: "DELETE",
-    });
+    await fetch(`/api/${apiMap[currentTab]}/${selectedId}`, { method: "DELETE" });
     setAlertOpen(false);
     fetchAll();
-  }
+  };
 
-  function buildPayload() {
+  const buildPayload = () => {
     switch (currentTab) {
       case "Alergias":
-        return {
-          alergia_nome: nome.trim(),
-          alergia_cid: campo2.toUpperCase().trim(),
-        };
+        return { alergia_nome: nome.trim(), alergia_cid: campo2.toUpperCase().trim() };
       case "Doencas":
-        return {
-          doenca_nome: nome.trim(),
-          doenca_cid: campo2.toUpperCase().trim(),
-        };
+        return { doenca_nome: nome.trim(), doenca_cid: campo2.toUpperCase().trim() };
       case "DoencasFamiliares":
         return {
           doenca_familiar_nome: nome.trim(),
-          doenca_familiar_cid: campo2.toUpperCase().trim(),
+          doenca_familiar_cid: campo2.toUpperCase().trim()
         };
       case "Posologias":
         return { descricao_posologia: nome.trim() };
       case "Duracoes":
         return { descricao_duracao: nome.trim() };
       default:
-        // Especialidades, TiposConsulta, StatusConsulta, Medicamentos
-        return {
-          [labelsMap[currentTab].fields[1]]: nome.trim(),
-        };
+        return { [labelsMap[currentTab].fields[1]]: nome.trim() };
     }
-  }
+  };
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const endpoint = apiMap[currentTab];
     const method = dialogMode === "create" ? "POST" : "PUT";
     const url =
-      dialogMode === "create"
-        ? `/api/${endpoint}`
-        : `/api/${endpoint}/${selectedId}`;
+      dialogMode === "create" ? `/api/${endpoint}` : `/api/${endpoint}/${selectedId}`;
     setDialogOpen(false);
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(buildPayload()),
+      body: JSON.stringify(buildPayload())
     });
     fetchAll();
-  }
+  };
 
-  // padrões de validação
   const namePatterns = {
     textOnly: {
       rx: /^(?=.{3,100}$)(?!.*\s{2})[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/,
-      msg:
-        "3–100 letras; espaços simples/hífen/apóstrofo; sem números nem espaços duplos",
+      msg: "3–100 letras; espaços simples/hífen/apóstrofo; sem números nem espaços duplos"
     },
     alphaNum: {
       rx: /^(?=.{3,100}$)[A-Za-zÀ-ÖØ-öø-ÿ0-9]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*$/,
-      msg: "3–100 alfanum.; espaços simples/hífen/apóstrofo",
+      msg: "3–100 alfanum.; espaços simples/hífen/apóstrofo"
     },
     posologia: {
       rx: /^(?=.{3,200}$)[A-Za-zÀ-ÖØ-öø-ÿ0-9 ()\/\-,\.]+$/,
-      msg:
-        "3–200 chars. permitidos: letras, números, espaços, ()/-,.",
+      msg: "3–200 caracteres permitidos: letras, números, espaços, ()/-,."
     },
     duracao: {
-      // ao menos 1 dígito e 3 letras, total mínimo 4
       rx: /^(?=.*\d)(?=(.*[A-Za-zÀ-ÖØ-öø-ÿ]){3,})[A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{4,50}$/,
-      msg:
-        "4–50 chars.; ao menos 1 dígito e 3 letras; só alfanum. e espaços",
+      msg: "4–50 caracteres; ao menos 1 dígito e 3 letras; apenas alfanum. e espaços"
     },
     cid10: {
       rx: /^[A-TV-Z]\d{2}(?:\.\d{1,2})?$/,
-      msg: "CID-10 inválido (ex: J30 ou E11.9)",
-    },
+      msg: "CID-10 inválido (ex: J30 ou E11.9)"
+    }
   };
 
-  function validateNome(v: string, tab: string) {
+  const validateNome = (v: string, tab: string) => {
     const val = v.trim();
     if (!val) return "Campo obrigatório";
     let p = namePatterns.textOnly;
-    if (["Posologias"].includes(tab)) p = namePatterns.posologia;
-    else if (["Duracoes"].includes(tab)) p = namePatterns.duracao;
-    else if (["Medicamentos"].includes(tab)) p = namePatterns.alphaNum;
-    if (!p.rx.test(val)) return p.msg;
-    return "";
-  }
+    if (tab === "Posologias") p = namePatterns.posologia;
+    else if (tab === "Duracoes") p = namePatterns.duracao;
+    else if (tab === "Medicamentos") p = namePatterns.alphaNum;
+    return p.rx.test(val) ? "" : p.msg;
+  };
 
-  function validateCampo2(v: string, tab: string) {
-    if (!["Alergias", "Doencas", "DoencasFamiliares"].includes(tab))
-      return "";
+  const validateCampo2 = (v: string, tab: string) => {
+    if (!["Alergias", "Doencas", "DoencasFamiliares"].includes(tab)) return "";
     const val = v.trim();
     if (!val) return "CID obrigatório";
-    if (!namePatterns.cid10.rx.test(val)) return namePatterns.cid10.msg;
-    return "";
-  }
+    return namePatterns.cid10.rx.test(val) ? "" : namePatterns.cid10.msg;
+  };
 
-  function onNomeChange(v: string) {
+  const onNomeChange = (v: string) => {
     setNome(v);
     setNomeError(validateNome(v, currentTab));
-  }
-  function onCampo2Change(v: string) {
+  };
+  const onCampo2Change = (v: string) => {
     setCampo2(v);
     setCampo2Error(validateCampo2(v, currentTab));
-  }
+  };
 
-  const requiresCampo2 = [
-    "Alergias",
-    "Doencas",
-    "DoencasFamiliares",
-  ].includes(currentTab);
+  const requiresCampo2 = ["Alergias", "Doencas", "DoencasFamiliares"].includes(currentTab);
   const isSubmitDisabled =
     !nome.trim() ||
     !!nomeError ||
@@ -395,9 +332,7 @@ export default function AuxiliaresPage() {
       </Header>
 
       <main className="p-6">
-        <h1 className="text-3xl font-bold mb-6">
-          Cadastro Auxiliares - Administrador
-        </h1>
+        <h1 className="text-3xl font-bold mb-6">Cadastro Auxiliares - Administrador</h1>
 
         <Tabs
           value={currentTab}
@@ -429,16 +364,10 @@ export default function AuxiliaresPage() {
                       }}
                       className="flex-1 md:w-72"
                     />
-                    <Button
-                      variant="secondary"
-                      onClick={exportXlsx}
-                      className="flex gap-1"
-                    >
+                    <Button variant="secondary" onClick={exportXlsx} className="flex gap-1">
                       <FileSpreadsheet size={16} /> XLSX
                     </Button>
-                    <Button onClick={() => openCreate(tab)}>
-                      Adicionar
-                    </Button>
+                    <Button onClick={() => openCreate(tab)}>Adicionar</Button>
                   </div>
                 </CardHeader>
 
@@ -457,9 +386,7 @@ export default function AuxiliaresPage() {
                       </TableHeader>
                       <TableBody>
                         {paginated.map(item => (
-                          <TableRow
-                            key={item[labelsMap[tab].fields[0]]}
-                          >
+                          <TableRow key={item[labelsMap[tab].fields[0]]}>
                             {labelsMap[tab].fields.map(f => (
                               <TableCell key={f}>{item[f]}</TableCell>
                             ))}
@@ -469,47 +396,27 @@ export default function AuxiliaresPage() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() =>
-                                    openEdit(
-                                      tab,
-                                      item[labelsMap[tab].fields[0]],
-                                      {
-                                        nome:
-                                          item[
-                                            labelsMap[tab].fields[1]
-                                          ],
-                                        campo2:
-                                          labelsMap[tab].fields[2]
-                                            ? item[
-                                                labelsMap[tab].fields[2]
-                                              ]
-                                            : "",
-                                      }
-                                    )
+                                    openEdit(tab, item[labelsMap[tab].fields[0]], {
+                                      nome: item[labelsMap[tab].fields[1]],
+                                      campo2: labelsMap[tab].fields[2]
+                                        ? item[labelsMap[tab].fields[2]]
+                                        : ""
+                                    })
                                   }
                                 >
                                   Editar
                                 </Button>
-                                <AlertDialog
-                                  open={alertOpen}
-                                  onOpenChange={setAlertOpen}
-                                >
+                                <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>
-                                        Confirmar exclusão?
-                                      </AlertDialogTitle>
+                                      <AlertDialogTitle>Confirmar exclusão?</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        Esta ação não poderá ser
-                                        desfeita.
+                                        Esta ação não poderá ser desfeita.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                      <AlertDialogCancel>
-                                        Cancelar
-                                      </AlertDialogCancel>
-                                      <AlertDialogAction
-                                        onClick={handleDelete}
-                                      >
+                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                      <AlertDialogAction onClick={handleDelete}>
                                         Excluir
                                       </AlertDialogAction>
                                     </AlertDialogFooter>
@@ -521,8 +428,7 @@ export default function AuxiliaresPage() {
                         ))}
                       </TableBody>
                       <TableCaption>
-                        Página {page} de {totalPages} — {filtered.length}{" "}
-                        registro(s)
+                        Página {page} de {totalPages} — {filtered.length} registro(s)
                       </TableCaption>
                     </Table>
                   </ScrollArea>
@@ -562,14 +468,11 @@ export default function AuxiliaresPage() {
               {dialogMode === "create" ? "Adicionar " : "Editar "}
               {tabLabels[currentTab]}
             </DialogTitle>
-            <DialogDescription>
-              Preencha os campos abaixo
-            </DialogDescription>
+            <DialogDescription>Preencha os campos abaixo</DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Nome / descrição */}
               <div className="flex flex-col gap-1">
                 <Label>
                   {currentTab === "Duracoes"
@@ -583,14 +486,9 @@ export default function AuxiliaresPage() {
                   onChange={e => onNomeChange(e.target.value)}
                   className={nomeError ? "border-red-500" : ""}
                 />
-                {nomeError && (
-                  <span className="text-red-600 text-sm">
-                    {nomeError}
-                  </span>
-                )}
+                {nomeError && <span className="text-red-600 text-sm">{nomeError}</span>}
               </div>
 
-              {/* CID apenas em Alergias/Doenças/Doenças Familiares */}
               {requiresCampo2 && (
                 <div className="flex flex-col gap-1">
                   <Label>CID *</Label>
@@ -599,11 +497,7 @@ export default function AuxiliaresPage() {
                     onChange={e => onCampo2Change(e.target.value)}
                     className={campo2Error ? "border-red-500" : ""}
                   />
-                  {campo2Error && (
-                    <span className="text-red-600 text-sm">
-                      {campo2Error}
-                    </span>
-                  )}
+                  {campo2Error && <span className="text-red-600 text-sm">{campo2Error}</span>}
                 </div>
               )}
             </div>

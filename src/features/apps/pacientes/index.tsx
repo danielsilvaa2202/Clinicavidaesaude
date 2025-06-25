@@ -51,6 +51,7 @@ interface TopNavLink {
   isActive: boolean;
   disabled: boolean;
 }
+
 interface Patient {
   id_paciente: number;
   pac_cpf: string;
@@ -77,15 +78,16 @@ const CPF_RE = /^\d{11}$/;
 const CEP_RE = /^\d{8}$/;
 
 const UF_SET = new Set([
-  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB",
-  "PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
+  "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
 ]);
+
 const DDD_SET = new Set([
-  "11","12","13","14","15","16","17","18","19","21","22","24","27","28",
-  "31","32","33","34","35","37","38","41","42","43","44","45","46","47","48",
-  "49","51","53","54","55","61","62","64","63","65","66","67","68","69",
-  "71","73","74","75","77","79","81","82","83","84","85","86","87","88",
-  "89","91","92","93","94","95","96","97","98","99"
+  "11", "12", "13", "14", "15", "16", "17", "18", "19", "21", "22", "24", "27", "28",
+  "31", "32", "33", "34", "35", "37", "38", "41", "42", "43", "44", "45", "46", "47",
+  "48", "49", "51", "53", "54", "55", "61", "62", "64", "63", "65", "66", "67", "68",
+  "69", "71", "73", "74", "75", "77", "79", "81", "82", "83", "84", "85", "86", "87",
+  "88", "89", "91", "92", "93", "94", "95", "96", "97", "98", "99"
 ]);
 
 const validarCPF = (c: string): boolean => {
@@ -100,14 +102,16 @@ const validarCPF = (c: string): boolean => {
 };
 
 const formatCPF = (v: string) =>
-  v.replace(/\D/g, "")
+  v
+    .replace(/\D/g, "")
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
     .replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4")
     .slice(0, 14);
 
 const formatPhone = (v: string) =>
-  v.replace(/\D/g, "")
+  v
+    .replace(/\D/g, "")
     .replace(/(\d{2})(\d)/, "($1) $2")
     .replace(/(\d{5})(\d)/, "$1-$2")
     .slice(0, 15);
@@ -118,6 +122,7 @@ const formatCep = (v: string) =>
 const isPastOrToday = (d: string) => new Date(d) <= new Date();
 
 const NAME_PART_RE = /^[A-ZÀ-Ö][a-zà-ö]+$/;
+
 const getNomeError = (raw: string) => {
   const v = raw.trim();
   if (!v) return "Nome é obrigatório.";
@@ -129,21 +134,20 @@ const getNomeError = (raw: string) => {
     return "Cada parte deve ter ≥2 letras e iniciar com maiúscula.";
   return "";
 };
+
 const EMAIL_RE =
   /^[a-z0-9](?:[a-z0-9._%+-]{0,62}[a-z0-9])?@(?:[a-z0-9-]+\.)+[a-z]{2,6}$/i;
 const REPEATED_TLD_RE = /(\.[a-z]{2,6})\1+$/i;
+
 const getEmailError = (e: string) => {
   if (!e) return "E-mail é obrigatório.";
-
   const email = e.trim().toLowerCase();
   if (!EMAIL_RE.test(email)) return "Formato de e-mail inválido.";
-
   const domain = email.split("@")[1];
-
   if (REPEATED_TLD_RE.test(domain)) return "Domínio inválido (sufixo repetido).";
-
   return "";
 };
+
 const getTelefoneError = (v: string) => {
   const n = v.replace(/\D/g, "");
   if (!n) return "Telefone é obrigatório.";
@@ -154,10 +158,14 @@ const getTelefoneError = (v: string) => {
   if (n.length === 10 && !/[2-5]/.test(n[2])) return "Fixo inicia com 2–5.";
   return "";
 };
+
 const getCidadeError = (v: string) =>
-  !v ? "Cidade é obrigatória." : /^[A-Za-zÀ-ÖØ-öø-ÿ ]{2,40}$/.test(v)
+  !v
+    ? "Cidade é obrigatória."
+    : /^[A-Za-zÀ-ÖØ-öø-ÿ ]{2,40}$/.test(v)
     ? ""
     : "Somente letras, 2–40 caracteres.";
+
 const getUFError = (v: string) =>
   !v ? "UF é obrigatória." : UF_SET.has(v.toUpperCase()) ? "" : "UF inválida.";
 
@@ -191,7 +199,9 @@ const matchesSearch = (p: Patient, term: string) => {
 const PacientesPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"active" | "inactive" | "all">("active");
+  const [statusFilter, setStatusFilter] = useState<"active" | "inactive" | "all">(
+    "active"
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
   const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
@@ -207,7 +217,9 @@ const PacientesPage: React.FC = () => {
   const [city, setCity] = useState("");
   const [uf, setUf] = useState("");
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
-  const [cepStatus, setCepStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [cepStatus, setCepStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [alertOpen, setAlertOpen] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
   const [errorOpen, setErrorOpen] = useState(false);
@@ -245,6 +257,7 @@ const PacientesPage: React.FC = () => {
     setDialogMode("create");
     setDialogOpen(true);
   };
+
   const openEditDialog = (id: number) => {
     const p = patients.find(x => x.id_paciente === id);
     if (p) {
@@ -274,7 +287,9 @@ const PacientesPage: React.FC = () => {
         if (!r.ok) {
           const d = await r.json().catch(() => ({}));
           if (r.status === 409 && d?.erro) {
-            setErrorMsg(`Não é possível inativar ${patientToDelete.pac_nome} — existem consultas em aberto.`);
+            setErrorMsg(
+              `Não é possível inativar ${patientToDelete.pac_nome} — existem consultas em aberto.`
+            );
             setErrorOpen(true);
             return;
           }
@@ -391,10 +406,7 @@ const PacientesPage: React.FC = () => {
       formatter?: (v: string) => string
     ) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      if (
-        cepStatus === "success" &&
-        (field === "address" || field === "city" || field === "uf")
-      )
+      if (cepStatus === "success" && ["address", "city", "uf"].includes(field))
         return;
       const raw = e.target.value;
       const formatted = formatter ? formatter(raw) : raw;

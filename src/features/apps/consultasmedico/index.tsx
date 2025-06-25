@@ -9,7 +9,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import {
   TableBody,
   TableRow,
   TableHead,
-  TableCell,
+  TableCell
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -32,6 +32,7 @@ interface TopNavLink {
   isActive: boolean;
   disabled: boolean;
 }
+
 interface Consultation {
   id_consulta: number;
   id_medico: number;
@@ -42,6 +43,7 @@ interface Consultation {
   tipoconsulta_nome: string;
   id_consult_status: number;
 }
+
 interface ProcessedConsultation {
   id_consulta: number;
   id_medico: number;
@@ -52,20 +54,24 @@ interface ProcessedConsultation {
   specialty: string;
   id_consult_status: number;
 }
+
 interface Historico {
   id_histmed: number;
   hist_descricao: string;
   hist_data_ultima_alteracao: string;
 }
+
 interface AlergiaRow {
   id_histmed: number;
   alergia_nome: string;
   alergia_cid: string;
 }
+
 interface Prescricao {
   id_histmed: number;
   hist_prescricao: string;
 }
+
 interface MedHist {
   id_histmed: number;
   id_medicamento: number;
@@ -73,54 +79,62 @@ interface MedHist {
   medicamento_posologia: string;
   duracao: string;
 }
+
 interface MedList {
   id_medicamento: number;
   medicamento_nome: string;
 }
+
 interface DurList {
   id_duracao: number;
   descricao_duracao: string;
 }
+
 interface PosologiaOpt {
   id_posologia: number;
   descricao_posologia: string;
   posologia_livre: number;
 }
+
 interface DoencaRow {
   id_histmed: number;
   doenca_nome: string;
   doenca_cid: string;
 }
+
 interface DoencaFamiliar {
   id_histmed: number;
   id_doenca_familiar: number;
   doenca_familiar_nome: string;
   doenca_familiar_cid: string;
 }
+
 interface AlergiaOpt {
   id_alergia: number;
   alergia_nome: string;
   alergia_cid: string;
 }
+
 interface DoencaOpt {
   id_doenca: number;
   doenca_nome: string;
   doenca_cid: string;
 }
+
 interface DoencaFamOpt {
   id_doenca_familiar: number;
   doenca_familiar_nome: string;
   doenca_familiar_cid: string;
 }
 
-const STATUS_AGENDADA  = 1;
+const STATUS_AGENDADA = 1;
 const STATUS_CONCLUIDA = 2;
-const STATUS_PRESENCA  = 4;
+const STATUS_PRESENCA = 4;
 
 const topNavLinks: TopNavLink[] = [
   { title: "Início", href: "/", isActive: true, disabled: false },
   { title: "Consultas", href: "/consultasgestao", isActive: true, disabled: false },
-  { title: "Pacientes", href: "/pacientes", isActive: true, disabled: false },
+  { title: "Pacientes", href: "/pacientes", isActive: true, disabled: false }
 ];
 
 function authFetch(input: RequestInfo, init: RequestInit = {}) {
@@ -130,8 +144,8 @@ function authFetch(input: RequestInfo, init: RequestInit = {}) {
     headers: {
       "Content-Type": "application/json",
       Authorization: token ? `Bearer ${token}` : "",
-      ...(init.headers || {}),
-    },
+      ...(init.headers || {})
+    }
   });
 }
 
@@ -198,7 +212,7 @@ export default function ConsultaGestaoPage() {
             consult_hora: c.consult_hora,
             patientName: c.pac_nome,
             specialty: c.tipoconsulta_nome,
-            id_consult_status: c.id_consult_status,
+            id_consult_status: c.id_consult_status
           }))
         )
       )
@@ -245,8 +259,8 @@ export default function ConsultaGestaoPage() {
             id_consulta: consulta.id_consulta,
             id_paciente: consulta.id_paciente,
             id_medico: consulta.id_medico,
-            hist_descricao: "",
-          }),
+            hist_descricao: ""
+          })
         });
         return carregarHistorico(consulta);
       }
@@ -267,27 +281,25 @@ export default function ConsultaGestaoPage() {
   }
 
   async function handleSelect(c: ProcessedConsultation) {
-  /* agora permite AGENDADA (1) **ou** PRESENÇA (4) */
-  if (
-    (c.id_consult_status !== STATUS_AGENDADA &&
-     c.id_consult_status !== STATUS_PRESENCA) ||
-    selected
-  ) {
-    return;
+    if (
+      (c.id_consult_status !== STATUS_AGENDADA && c.id_consult_status !== STATUS_PRESENCA) ||
+      selected
+    ) {
+      return;
+    }
+
+    setSelected(c);
+    setObs("");
+    setHistorico([]);
+    setAlergias([]);
+    setPrescricoes([]);
+    setMedicamentosHistorico([]);
+    setDoencas([]);
+    setDoencasFamiliares([]);
+
+    await authFetch(`/api/consultas/${c.id_consulta}/inicio`, { method: "PATCH" });
+    carregarHistorico(c);
   }
-
-  setSelected(c);
-  setObs("");
-  setHistorico([]);
-  setAlergias([]);
-  setPrescricoes([]);
-  setMedicamentosHistorico([]);
-  setDoencas([]);
-  setDoencasFamiliares([]);
-
-  await authFetch(`/api/consultas/${c.id_consulta}/inicio`, { method: "PATCH" });
-  carregarHistorico(c);
-}
 
   function handleCancel() {
     setSelected(null);
@@ -308,8 +320,8 @@ export default function ConsultaGestaoPage() {
         id_consulta: selected.id_consulta,
         id_paciente: selected.id_paciente,
         id_medico: selected.id_medico,
-        hist_descricao: obs,
-      }),
+        hist_descricao: obs
+      })
     });
     if (res.ok) {
       setObs("");
@@ -321,6 +333,10 @@ export default function ConsultaGestaoPage() {
 
   function formatPtBr(iso: string) {
     return new Date(`${iso}T00:00:00`).toLocaleDateString("pt-BR");
+  }
+
+  function formatUtcPtBr(iso: string) {
+    return new Date(iso).toLocaleDateString("pt-BR", { timeZone: "UTC" });
   }
 
   function handleAlergiaChange(v: string) {
@@ -386,7 +402,7 @@ export default function ConsultaGestaoPage() {
       `/api/historico-medico/${historico[0].id_histmed}/alergias`,
       {
         method: "POST",
-        body: JSON.stringify({ id_alergia: novaAlergiaId }),
+        body: JSON.stringify({ id_alergia: novaAlergiaId })
       }
     );
     if (res.ok) {
@@ -405,7 +421,7 @@ export default function ConsultaGestaoPage() {
       `/api/historico-medico/${historico[0].id_histmed}/doencas`,
       {
         method: "POST",
-        body: JSON.stringify({ id_doenca: novaDoencaId }),
+        body: JSON.stringify({ id_doenca: novaDoencaId })
       }
     );
     if (res.ok) {
@@ -424,7 +440,7 @@ export default function ConsultaGestaoPage() {
       `/api/historico-medico/${historico[0].id_histmed}/doencasfamiliares`,
       {
         method: "POST",
-        body: JSON.stringify({ id_doenca_familiar: novaDoencaFamId }),
+        body: JSON.stringify({ id_doenca_familiar: novaDoencaFamId })
       }
     );
     if (res.ok) {
@@ -447,7 +463,7 @@ export default function ConsultaGestaoPage() {
       `/api/historico-medico/${historico[0].id_histmed}/prescricoes`,
       {
         method: "POST",
-        body: JSON.stringify({ hist_prescricao: novaPrescricao }),
+        body: JSON.stringify({ hist_prescricao: novaPrescricao })
       }
     );
     if (res.ok) {
@@ -481,14 +497,14 @@ export default function ConsultaGestaoPage() {
         id_medicamento,
         id_duracao_med,
         posologia_livre: 1,
-        descricao_posologia: textoPosLivre.trim(),
+        descricao_posologia: textoPosLivre.trim()
       };
     } else {
       body = {
         id_medicamento,
         id_duracao_med,
         id_posologia: Number(novaPosId),
-        posologia_livre: 0,
+        posologia_livre: 0
       };
     }
 
@@ -496,7 +512,7 @@ export default function ConsultaGestaoPage() {
       `/api/historico-medico/${historico[0].id_histmed}/medicamentos`,
       {
         method: "POST",
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       }
     );
     if (res.ok) {
@@ -516,7 +532,7 @@ export default function ConsultaGestaoPage() {
       `/api/consultas/${selected.id_consulta}/status`,
       {
         method: "PATCH",
-        body: JSON.stringify({ id_consult_status: STATUS_CONCLUIDA }),
+        body: JSON.stringify({ id_consult_status: STATUS_CONCLUIDA })
       }
     );
     if (!res.ok) {
@@ -541,7 +557,7 @@ export default function ConsultaGestaoPage() {
           data.map(c => ({
             ...c,
             patientName: c.pac_nome,
-            specialty: c.tipoconsulta_nome,
+            specialty: c.tipoconsulta_nome
           }))
         )
       )
@@ -604,7 +620,6 @@ export default function ConsultaGestaoPage() {
             )}
           </div>
 
-          {/* AGENDA */}
           <TabsContent value="agenda">
             <Card className="shadow-sm">
               <CardHeader>
@@ -663,25 +678,21 @@ export default function ConsultaGestaoPage() {
                           <TableCell>{c.patientName}</TableCell>
                           <TableCell>{c.specialty}</TableCell>
                           <TableCell>
-  {c.id_consult_status === STATUS_CONCLUIDA
-    ? "Concluída"
-    : "Agendada"}   {/* 1 ou 4 aparecem como Agendada */}
-</TableCell>
+                            {c.id_consult_status === STATUS_CONCLUIDA ? "Concluída" : "Agendada"}
+                          </TableCell>
                           <TableCell>
                             <Button
-  size="sm"
-  variant="outline"
-  /* agora permite seleção também quando status = PRESENÇA (4) */
-  disabled={
-    (c.id_consult_status !== STATUS_AGENDADA &&
-     c.id_consult_status !== STATUS_PRESENCA) ||
-    !!selected
-  }
-  onClick={() => handleSelect(c)}
->
-  Selecionar
-</Button>
-
+                              size="sm"
+                              variant="outline"
+                              disabled={
+                                (c.id_consult_status !== STATUS_AGENDADA &&
+                                  c.id_consult_status !== STATUS_PRESENCA) ||
+                                !!selected
+                              }
+                              onClick={() => handleSelect(c)}
+                            >
+                              Selecionar
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -702,7 +713,6 @@ export default function ConsultaGestaoPage() {
             </Card>
           </TabsContent>
 
-          {/* DADOS */}
           <TabsContent value="dados">
             <Card className="shadow-sm">
               <CardHeader>
@@ -725,11 +735,7 @@ export default function ConsultaGestaoPage() {
                     <TableBody>
                       {historico.map(h => (
                         <TableRow key={h.id_histmed}>
-                          <TableCell>
-                            {new Date(
-                              h.hist_data_ultima_alteracao
-                            ).toLocaleDateString("pt-BR")}
-                          </TableCell>
+                          <TableCell>{formatUtcPtBr(h.hist_data_ultima_alteracao)}</TableCell>
                           <TableCell>{h.hist_descricao}</TableCell>
                         </TableRow>
                       ))}
@@ -757,7 +763,6 @@ export default function ConsultaGestaoPage() {
             </Card>
           </TabsContent>
 
-          {/* ALERGIAS */}
           <TabsContent value="alergias">
             <Card className="shadow-sm">
               <CardHeader>
@@ -825,7 +830,6 @@ export default function ConsultaGestaoPage() {
             </Card>
           </TabsContent>
 
-          {/* DOENÇAS */}
           <TabsContent value="doencas">
             <Card className="shadow-sm">
               <CardHeader>
@@ -893,7 +897,6 @@ export default function ConsultaGestaoPage() {
             </Card>
           </TabsContent>
 
-          {/* DOENÇAS FAMILIARES */}
           <TabsContent value="doencasfamiliares">
             <Card className="shadow-sm">
               <CardHeader>
@@ -961,7 +964,6 @@ export default function ConsultaGestaoPage() {
             </Card>
           </TabsContent>
 
-          {/* PRESCRIÇÕES */}
           <TabsContent value="prescricoes">
             <Card className="shadow-sm">
               <CardHeader>
@@ -1004,7 +1006,6 @@ export default function ConsultaGestaoPage() {
             </Card>
           </TabsContent>
 
-          {/* MEDICAMENTOS */}
           <TabsContent value="medicamentos">
             <Card className="shadow-sm">
               <CardHeader>
@@ -1042,7 +1043,9 @@ export default function ConsultaGestaoPage() {
                 <div className="flex flex-wrap gap-2">
                   <select
                     value={novaMedId}
-                    onChange={e => setNovaMedId(e.target.value ? Number(e.target.value) : "")}
+                    onChange={e =>
+                      setNovaMedId(e.target.value ? Number(e.target.value) : "")
+                    }
                     className="border px-2 py-1 rounded"
                   >
                     <option value="">Medicamento…</option>
@@ -1057,7 +1060,9 @@ export default function ConsultaGestaoPage() {
                     value={novaPosId}
                     onChange={e => {
                       const v = e.target.value;
-                      setNovaPosId(v === "" ? "" : v === "livre" ? "livre" : Number(v));
+                      setNovaPosId(
+                        v === "" ? "" : v === "livre" ? "livre" : Number(v)
+                      );
                       setTextoPosLivre("");
                     }}
                     className="border px-2 py-1 rounded"
@@ -1083,7 +1088,9 @@ export default function ConsultaGestaoPage() {
 
                   <select
                     value={novaDurId}
-                    onChange={e => setNovaDurId(e.target.value ? Number(e.target.value) : "")}
+                    onChange={e =>
+                      setNovaDurId(e.target.value ? Number(e.target.value) : "")
+                    }
                     className="border px-2 py-1 rounded"
                     disabled={!novaMedId}
                   >
